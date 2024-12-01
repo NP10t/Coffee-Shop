@@ -1,74 +1,73 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React from 'react';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
+import images from '@/constants/images';
+import { COFFEE_DATA } from '@/constants/CoffeeData';
+import { router } from 'expo-router';
+import styles from '@/constants/Styles';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-
-export default function HomeScreen() {
+const HomePage = () => {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
-}
+    <View style={styles.container}>
+      {/* Header Section */}
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Good morning</Text>
+        <Text style={styles.name}>Anderson</Text>
+        <View style={styles.headerIcons}>
+          <TouchableOpacity onPress={() => {router.push('/myCart')}}>
+            <Image
+              source={images.cart_icon} // Replace with your cart icon path
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <TouchableOpacity onPress={() => {router.push('/profile')}}>
+              <Image
+                source={images.profile_icon} // Replace with your profile icon path
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
+      </View>
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+      {/* Loyalty Card Section */}
+      <View style={styles.loyaltyCard}>
+        <Text style={styles.loyaltyText}>Loyalty card</Text>
+        <Text style={styles.loyaltyProgress}>4 / 8</Text>
+        <View style={styles.cupsContainer}>
+          {Array(8)
+            .fill(0)
+            .map((_, index) => (
+              <Image
+                key={index}
+                source={
+                  index < 4
+                    ? images.filled_cup // Replace with filled cup icon path
+                    : images.empty_cup // Replace with empty cup icon path
+                }
+                style={styles.cupIcon}
+              />
+            ))}
+        </View>
+      </View>
+
+      {/* Coffee Selection Section */}
+      <Text style={styles.chooseCoffee}>Choose your coffee</Text>
+      <View style={styles.coffeeOptions}>
+        {COFFEE_DATA.map((coffee, index) => (
+          <TouchableOpacity key={index} 
+          style={styles.coffeeCard}
+          onPress={() => {router.push(`/details/${coffee.id}`)}}
+          // onPress={() => {console.log(coffee.id)}}
+          >
+            <Image source={coffee.image} style={styles.coffeeImage} />
+            <Text style={styles.coffeeName}>{coffee.name}</Text>
+
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  );
+};
+
+export default HomePage;
