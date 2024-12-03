@@ -1,31 +1,36 @@
-import { View, Text } from 'react-native'
+import {StatusBar, View, Text } from 'react-native'
 import React from 'react'
+import { OrderProvider } from '@/context/coffeeContext'
 import { Stack } from 'expo-router'
 
 const RootLayout = () => {
+  StatusBar.setBarStyle('dark-content');  // Đổi màu chữ trên thanh trạng thái
+  StatusBar.setBackgroundColor('#FFFFFF'); // Đổi màu nền của thanh trạng thái
   return (
-    <Stack>
-      <Stack.Screen
-          name="details/[coffeeID]"
-          options={{ headerShown: false }}
-      />
-      <Stack.Screen
-          name="redeem"
-          options={{ headerShown: false }}
-      />
-      <Stack.Screen
-          name="myCart"
-          options={{ headerShown: false }}
-      />
-      <Stack.Screen
-          name="profile"
-          options={{ headerShown: false }}
-      />
-      <Stack.Screen
-          name="(tabs)"
-          options={{ headerShown: false }}
-      />
-  </Stack>
+    <OrderProvider>
+        <Stack>
+            <Stack.Screen
+                name="details"
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="redeem"
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="myCart"
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="profile"
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="(tabs)"
+                options={{ headerShown: false }}
+            />
+    </Stack>
+  </OrderProvider>
   )
 }
 

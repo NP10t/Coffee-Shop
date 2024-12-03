@@ -9,8 +9,10 @@ import flatWhite from '@/assets/images/flatwhite.png';
 import home_icon from '@/assets/images/home-icon.png';
 import gift_icon from '@/assets/images/gift-icon.png';
 import history_icon from '@/assets/images/history-icon.png';
+import avatar from '@/assets/images/dophuqui.jpg';
 
 export default {
+    avatar,
     cart_icon,
     profile_icon,
     filled_cup,

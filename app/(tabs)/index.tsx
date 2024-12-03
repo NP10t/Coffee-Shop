@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import {SafeAreaView, View, Text, Image, TouchableOpacity } from 'react-native';
 import images from '@/constants/images';
 import { COFFEE_DATA } from '@/constants/CoffeeData';
 import { router } from 'expo-router';

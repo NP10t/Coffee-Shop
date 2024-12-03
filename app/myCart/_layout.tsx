@@ -7,7 +7,11 @@ const _layout = () => {
     <Stack>
         <Stack.Screen 
             name="index" 
-            options={{ headerShown: false }} 
+            options={{ 
+              headerShown: true,
+              title: 'My Cart',
+              headerTitleAlign: 'center',
+            }} 
         />
     </Stack>
   )

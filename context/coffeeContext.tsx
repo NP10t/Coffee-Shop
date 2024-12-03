@@ -1,39 +1,97 @@
+import images from '@/constants/images';
+import { ProfileSchema } from '@/constants/profileSchema';
 import React, { createContext, useState, useContext } from 'react';
 
-// Định nghĩa kiểu dữ liệu cho cà phê
-export interface CoffeeType {
-  id: number;
-  name: string;
-  image: any; // Thay `any` bằng `ImageSourcePropType` nếu bạn dùng ảnh
-  point: number;
-  price: number;
-}
+const OrderContext = createContext();
 
-// Định nghĩa kiểu dữ liệu context
-interface CoffeeContextType {
-  selectedCoffee: CoffeeType | null;
-  setSelectedCoffee: (coffee: CoffeeType) => void;
-}
+export const OrderProvider = ({ children }) => {
+  const [cartItems, setCartItems] = useState([]);
+  const [ongoingOrders, setOngoingOrders] = useState([]);
+  const [historyOrders, setHistoryOrders] = useState([]);
+  const [profile, setProfile] = useState<ProfileSchema>({
+    name: 'Do Phu Qui',
+    email: 'PickleBall@ggay.com',
+    phone: '0123456789',
+    address: 'Hanoi, Vietnam',
+    avatar: images.avatar
+  }
+  );
 
-// Tạo context
-const CoffeeContext = createContext<CoffeeContextType | undefined>(undefined);
+  const addToCart = (item) => {
+    setCartItems(prevItems => {
+      // Tìm kiếm sản phẩm trong giỏ hàng có thông số giống với sản phẩm hiện tại
+      const existingItemIndex = prevItems.findIndex(cartItem => 
+        cartItem.details === item.details && cartItem.typeID === item.typeID// thêm các điều kiện khác nếu cần
+      );
+  
+      if (existingItemIndex !== -1) {
+        // Nếu sản phẩm đã tồn tại trong giỏ, chỉ tăng số lượng
+        const updatedItems = [...prevItems];
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          quantity: updatedItems[existingItemIndex].quantity + 1, // tăng số lượng
+        };
+        return updatedItems;
+      } else {
+        // Nếu sản phẩm chưa có trong giỏ, thêm sản phẩm mới vào giỏ hàng với quantity = 1
+        return [
+          ...prevItems,
+          {
+            ...item,
+            id: Date.now(), // tạo id mới cho sản phẩm
+            quantity: 1, // số lượng ban đầu là 1
+          },
+        ];
+      }
+    });
+  };
 
-// Provider để bao bọc ứng dụng
-export const CoffeeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [selectedCoffee, setSelectedCoffee] = useState<CoffeeType | null>(null);
+  const checkout = () => {
+    const newOrder = {
+      id: Date.now(),
+      items: [...cartItems],
+      date: new Date()
+    };
+    setOngoingOrders(prevOrders => [...prevOrders, newOrder]);
+    setCartItems([]);
+  };
+
+  const completeOrder = (orderId) => {
+    const completedOrder = ongoingOrders.find(order => order.id === orderId);
+    if (completedOrder) {
+      setHistoryOrders(prevHistory => [...prevHistory, completedOrder]);
+      setOngoingOrders(prevOrders => 
+        prevOrders.filter(order => order.id !== orderId)
+      );
+    }
+  };
 
   return (
-    <CoffeeContext.Provider value={{ selectedCoffee, setSelectedCoffee }}>
+    <OrderContext.Provider 
+      value={{ 
+        profile,
+        setProfile,
+        cartItems,
+        setCartItems,
+        ongoingOrders,
+        setOngoingOrders,
+        historyOrders,
+        setHistoryOrders,
+        addToCart, 
+        checkout,
+        completeOrder 
+      }}
+    >
       {children}
-    </CoffeeContext.Provider>
+    </OrderContext.Provider>
   );
 };
 
-// Hook để sử dụng context
-export const useCoffee = () => {
-  const context = useContext(CoffeeContext);
+// Custom hook để sử dụng context dễ dàng
+export const useOrder = () => {
+  const context = useContext(OrderContext);
   if (!context) {
-    throw new Error('useCoffee must be used within a CoffeeProvider');
+    throw new Error('useOrder must be used within an OrderProvider');
   }
   return context;
 };

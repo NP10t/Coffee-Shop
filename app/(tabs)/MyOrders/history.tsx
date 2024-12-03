@@ -1,46 +1,73 @@
-import React from 'react';
-import { View, FlatList, Text, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+} from "react-native";
 
 const History = () => {
-  const orderItems = [
+  // Đây là dữ liệu lịch sử đơn hàng sau khi checkout
+  const [orderHistory, setOrderHistory] = useState([
     {
-      name: 'Americano',
-      price: 3.00,
-      location: '3 Addersion Court Chino Hills, HO56824, United State'
+      id: 1,
+      items: [
+        { name: "Americano", quantity: 2, price: 3.0 },
+        { name: "Cafe Latte", quantity: 1, price: 3.0 },
+      ],
+      address: "3 Adderson Court Chino Hills, HO56824, United States",
+      totalPrice: 9.0,
+      date: "24 June | 12:30 PM",
+      status: "Completed", // Trạng thái: Đang xử lý
     },
     {
-      name: 'Flat White',
-      price: 3.00,
-      location: '3 Addersion Court Chino Hills, HO56824, United State'
-    }
-  ];
+      id: 2,
+      items: [
+        { name: "Flat White", quantity: 1, price: 3.0 },
+        { name: "Espresso", quantity: 3, price: 2.5 },
+      ],
+      address: "10 Apple St, New York, NY 10001, United States",
+      totalPrice: 10.5,
+      date: "20 June | 10:15 AM",
+      status: "Completed", // Trạng thái: Đã hoàn thành
+    },
+  ]);
 
-  const renderItem = ({ item }) => (
-    <View style={styles.orderItem}>
-      <View style={styles.orderInfo}>
-        <Text style={styles.orderName}>{item.name}</Text>
-        <Text style={styles.orderPrice}>${item.price.toFixed(2)}</Text>
+  // Render từng đơn hàng
+  const renderOrder = ({ item }) => (
+    <View style={styles.orderContainer}>
+      {/* Thông tin ngày đặt */}
+      <Text style={styles.orderDate}>{item.date}</Text>
+      <View style={styles.divider} />
+      {/* Hiển thị từng món trong đơn hàng */}
+      {item.items.map((orderItem, index) => (
+        <View key={index} style={styles.itemRow}>
+          <Text style={styles.itemName}>{orderItem.name}</Text>
+          <Text style={styles.itemQuantity}>
+            x{orderItem.quantity} - ${orderItem.price.toFixed(2)}
+          </Text>
+        </View>
+      ))}
+      <View style={styles.divider} />
+      {/* Tổng giá trị và trạng thái */}
+      <View style={styles.footer}>
+        <Text style={styles.address}>{item.address}</Text>
+        <Text style={styles.totalPrice}>Total: ${item.totalPrice.toFixed(2)}</Text>
+        <Text style={styles.status}>
+          {item.status === "Completed" ? "✔ Completed" : "⌛ On-going"}
+        </Text>
       </View>
-      <Text style={styles.orderLocation}>{item.location}</Text>
     </View>
   );
 
-  const total = orderItems.reduce((acc, item) => acc + item.price, 0);
-
   return (
     <View style={styles.container}>
-      <View style={styles.orderSection}>
-        <FlatList
-          data={orderItems}
-          keyExtractor={(item) => item.name}
-          renderItem={renderItem}
-          contentContainerStyle={styles.orderList}
-        />
-      </View>
-      <View style={styles.orderSection}>
-        <Text style={styles.sectionTitle}>History</Text>
-        <Text style={styles.totalPrice}>${total.toFixed(2)}</Text>
-      </View>
+      <FlatList
+        data={orderHistory}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderOrder}
+        contentContainerStyle={styles.listContainer}
+      />
     </View>
   );
 };
@@ -48,48 +75,61 @@ const History = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingVertical: 24,
+    backgroundColor: "#f5f5f5",
   },
-  orderSection: {
-    marginBottom: 24,
+  listContainer: {
+    padding: 10,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  orderList: {
-    paddingVertical: 8,
-  },
-  orderItem: {
-    backgroundColor: '#f5f5f5',
-    padding: 16,
+  orderContainer: {
+    backgroundColor: "#ffffff",
     borderRadius: 8,
+    padding: 15,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  orderDate: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 5,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
     marginVertical: 8,
   },
-  orderInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+  itemRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 5,
   },
-  orderName: {
+  itemName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "500",
   },
-  orderPrice: {
+  itemQuantity: {
     fontSize: 16,
-    fontWeight: 'bold',
+    color: "#777",
   },
-  orderLocation: {
+  footer: {
+    marginTop: 10,
+  },
+  address: {
     fontSize: 14,
-    color: '#666',
+    color: "#888",
   },
   totalPrice: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 5,
+  },
+  status: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#4caf50",
+    marginTop: 5,
   },
 });
 

@@ -1,20 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+// import { ProfileSchema } from '@/constants/profileSchema';
+import { useOrder } from '@/context/coffeeContext';
+
 
 const Profile = () => {
-  const [name, setName] = useState('Anderson');
-  const [phone, setPhone] = useState('+60134589525');
-  const [email, setEmail] = useState('anderson@email.com');
-  const [address, setAddress] = useState('3 Addersion Court Chino Hills, HO56824, United States');
-  const [avatar, setAvatar] = useState(null);
 
-  const handleSave = () => {
-    // Save the updated user information
-    console.log('Saved:', { name, phone, email, address, avatar });
-    Alert.alert('Profile Updated', 'Your profile information has been saved successfully.');
-  };
+  const { setProfile, profile } = useOrder();
+
+  const [name, setName] = useState(profile.name);
+  const [phone, setPhone] = useState(profile.phone);
+  const [email, setEmail] = useState(profile.email);
+  const [address, setAddress] = useState(profile.address);
+  const [avatar, setAvatar] = useState(profile.avatar);
+
+  useEffect(() => {
+    setProfile({
+      name,
+      email,
+      phone,
+      address,
+      avatar,
+  })}, [name,
+    email,
+    phone,
+    address,
+    avatar,]);
+
+  useEffect(() => {
+    console.log(avatar);
+
+    console.log(profile.avatar);
+  } , [email]);
+
 
   const handleDeleteAccount = () => {
     Alert.alert(
@@ -29,6 +49,7 @@ const Profile = () => {
   };
 
   const handleAvatarPick = async () => {
+    console.log('Pick avatar');
     // Request camera roll permissions
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -36,25 +57,28 @@ const Profile = () => {
       return;
     }
 
-    // Open image picker
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: 'images', // Updated to use string instead of enum
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     });
 
-    if (!result.cancelled) {
-      setAvatar(result.uri);
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setAvatar(result.assets[0].uri);
     }
-  };
+
+    console.log(profile.avatar);
+};
+
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profile}>
         <TouchableOpacity style={styles.avatarContainer} onPress={handleAvatarPick}>
           {avatar ? (
-            <Image source={{ uri: avatar }} style={styles.avatar} />
+            <Image source={profile.avatar} style={styles.avatar} />
           ) : (
             <FontAwesome5 name="user-circle" size={64} color="#333" />
           )}
@@ -100,7 +124,9 @@ const Profile = () => {
       <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
         <Text style={styles.deleteButtonText}>Delete Account</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+      <TouchableOpacity style={styles.saveButton}
+      //  onPress={handleSave}
+      >
         <Text style={styles.saveButtonText}>Save</Text>
       </TouchableOpacity>
     </ScrollView>
