@@ -10,54 +10,18 @@ import {
   Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useOrder } from '@/context/coffeeContext';
+import { useOrder } from '@/view-model/coffee-view-model';
 
 const CartScreen = () => {
 
-  const { cartItems, checkout, setCartItems } = useOrder();
-
-  const handleRemoveItem = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
-
-  const handleIncreaseQuantity = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
-
-  const handleDecreaseQuantity = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
-  };
-
-  const toggleSelectItem = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, selected: !item.selected } : item
-      )
-    );
-  };
-
-  const handleCheckout = () => {
-    setCartItems(cartItems.filter((item) => !item.selected));
-
-    
-  };
-
-  const calculateTotal = () => {
-    return cartItems
-      .filter((item) => item.selected)
-      .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toFixed(2);
-  };
+  const { cartItems,
+    toggleSelectItem,
+    handleDecreaseQuantity,
+    handleIncreaseQuantity,
+    handleRemoveItem,
+    calculateTotal,
+    handleCheckout 
+  } = useOrder();
 
   const renderItem = ({ item }) => (
 
@@ -76,7 +40,7 @@ const CartScreen = () => {
       <View style={styles.itemDetails}>
         <Text style={styles.itemName}>{item.name}</Text>
         <Pressable onPress={()=>router.push(`/details/${item.id}`)}>
-        <Text style={styles.itemDetailsText}>{item.details}</Text>
+        <Text style={styles.itemDetailsText}>{item.details.to_string()}</Text>
         </Pressable>
         <View style={styles.quantityContainer}>
           <TouchableOpacity
@@ -109,12 +73,6 @@ const CartScreen = () => {
     <View style={styles.container}>
       {/* Header */}
 
-      {/* <View style={styles.header}>
-        <Icon name="arrow-back-outline" size={24} color="#000" />
-        <Text style={styles.headerTitle}>My Cart</Text>
-      <View style={{ width: 24 }} />
-    </View> */}
-
       {/* Cart Items */}
       <FlatList
         data={cartItems}
@@ -127,11 +85,16 @@ const CartScreen = () => {
       <View style={styles.footer}>
         <View style={styles.totalContainer}>
           <Text style={styles.totalLabel}>Total Price</Text>
-          <Text style={styles.totalPrice}>${calculateTotal()}</Text>
+          <Text style={styles.totalPrice}>${
+          calculateTotal()
+          }</Text>
         </View>
         <TouchableOpacity
           style={styles.checkoutButton}
-          onPress={handleCheckout}
+          onPress={() => {
+            handleCheckout(); // Call handleCheckout function
+            router.push('/myCart/orderSuccess'); // Navigate to the '/order' route
+          }}
         >
           <Icon name="cart-outline" size={20} color="#fff" />
           <Text style={styles.checkoutButtonText}>Checkout</Text>

@@ -1,11 +1,15 @@
 import React from 'react';
 import {SafeAreaView, View, Text, Image, TouchableOpacity } from 'react-native';
 import images from '@/constants/images';
-import { COFFEE_DATA } from '@/constants/CoffeeData';
+// import { Coffees } from '@/constants/CoffeeData';
+import { useOrder  } from '@/view-model/coffee-view-model';
 import { router } from 'expo-router';
 import styles from '@/constants/Styles';
 
 const HomePage = () => {
+
+  const { Coffees } = useOrder();
+
   return (
     <View style={styles.container}>
       {/* Header Section */}
@@ -54,7 +58,7 @@ const HomePage = () => {
       {/* Coffee Selection Section */}
       <Text style={styles.chooseCoffee}>Choose your coffee</Text>
       <View style={styles.coffeeOptions}>
-        {COFFEE_DATA.map((coffee, index) => (
+        {Coffees.map((coffee, index) => (
           <TouchableOpacity key={index} 
           style={styles.coffeeCard}
           onPress={() => {router.push(`/details/${coffee.id}`)}}

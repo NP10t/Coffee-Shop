@@ -1,6 +1,6 @@
 import {StatusBar, View, Text } from 'react-native'
 import React from 'react'
-import { OrderProvider } from '@/context/coffeeContext'
+import { OrderProvider } from '@/view-model/coffee-view-model'
 import { Stack } from 'expo-router'
 
 const RootLayout = () => {

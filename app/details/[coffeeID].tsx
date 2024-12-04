@@ -2,81 +2,32 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
-import { AntDesign } from '@expo/vector-icons';
-import { COFFEE_DATA, CoffeeType } from '@/constants/CoffeeData';
-import { useOrder } from "@/context/coffeeContext";
-import {Item} from '@/constants/item';
+import { useOrder } from "@/view-model/coffee-view-model";
 
 const DetailsScreen = () => {
-  const [quantity, setQuantity] = useState(1);
-  const [shot, setShot] = useState("Single");
-  const [selection, setSelection] = useState("Cup");
-  const [size, setSize] = useState("Medium");
-  const [ice, setIce] = useState(false);
+  const { coffee, 
+    addToCart, 
+    getCoffeeItem, 
+    handleQuantityChange,
+    quantity,
+    shot,
+    size,
+    ice,
+    selection,
+    handleSelectionChange,
+    handleSizeChange,
+    handleIceChange,
+    handleShotChange,
+    } = useOrder();
 
   const { coffeeID } = useLocalSearchParams();
-  const { addToCart } = useOrder();
-  const [coffee, setCoffee] = useState<Item>();
 
   useEffect(() => {
-    const coffeeType = COFFEE_DATA[Number(coffeeID) - 1];
-
-    if (coffeeType) {
-      const { id:typeID, name, price, image } = coffeeType;
-      setCoffee({
-        id: -1,
-        typeID: typeID,
-        name,
-        price,
-        quantity,
-        selected: true,
-        details: `${shot} | ${selection} | ${size} | ${ice ? "Ice" : "Hot"}`,
-        image,
-      });
-    }
+    getCoffeeItem(coffeeID)
   }, [coffeeID]);
-  
-  useEffect(() => {
-    if (coffee) {
-      setCoffee((prev) => {
-        if (!prev) return prev; // Nếu prev là undefined, trả về luôn.
-        return {
-          ...prev,
-          quantity,
-          details: `${shot} | ${selection} | ${size} | ${ice ? "Ice" : "Hot"}`,
-        };
-      });
-    }
-  }, [quantity, shot, selection, size, ice]);
-  
-
-  const handleQuantityChange = (type) => {
-    if (type === "increase") {
-      setQuantity(quantity + 1);
-    } else if (type === "decrease" && quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
-  const calculateTotal = () => {
-    let basePrice = Number(coffee?.price); // Base price for an Americano
-    basePrice += shot === "Double" ? 1 : 0;
-    basePrice += size === "Large" ? 1.5 : size === "Small" ? -0.5 : 0;
-    return (basePrice * quantity).toFixed(2);
-  };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      {/* <View style={styles.header}>
-        <Pressable onPress={() => router.back()}>
-        <Icon name="arrow-back-outline" size={24} color="#000" />
-        </Pressable>
-        <Text style={styles.headerTitle}>Details</Text>
-        <Pressable onPress={() => router.push('/myCart')}>
-        <Icon name="cart-outline" size={24} color="#000" />
-        </Pressable>
-      </View> */}
 
       {/* Coffee Image */}
       <Image
@@ -108,7 +59,7 @@ const DetailsScreen = () => {
                 styles.option,
                 shot === "Single" && styles.optionSelected,
               ]}
-              onPress={() => setShot("Single")}
+              onPress={() => handleShotChange("Single")}
             >
               <Text
                 style={[
@@ -124,7 +75,7 @@ const DetailsScreen = () => {
                 styles.option,
                 shot === "Double" && styles.optionSelected,
               ]}
-              onPress={() => setShot("Double")}
+              onPress={() => handleShotChange("Double")}
             >
               <Text
                 style={[
@@ -143,8 +94,7 @@ const DetailsScreen = () => {
           <Text style={styles.label}>Select</Text>
           <View style={styles.iconContainer}>
             <TouchableOpacity 
-            // onPress={() => router.push('/details/1')}
-            onPress={() => setSelection("Cup")}
+            onPress={() => handleSelectionChange("Cup")}
               >
               <Icon
                 name="cafe-outline"
@@ -152,7 +102,7 @@ const DetailsScreen = () => {
                 color={selection === "Cup" ? "#000" : "#bbb"}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setSelection("Takeaway")}>
+            <TouchableOpacity onPress={() => handleSelectionChange("Takeaway")}>
               <Icon
                 name="beer-outline"
                 size={28}
@@ -166,21 +116,21 @@ const DetailsScreen = () => {
         <View style={styles.row}>
           <Text style={styles.label}>Size</Text>
           <View style={styles.iconContainer}>
-            <TouchableOpacity onPress={() => setSize("Small")}>
+            <TouchableOpacity onPress={() => handleSizeChange("Small")}>
               <Icon
                 name="square-outline"
                 size={28}
                 color={size === "Small" ? "#000" : "#bbb"}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setSize("Medium")}>
+            <TouchableOpacity onPress={() => handleSizeChange("Medium")}>
               <Icon
                 name="square-sharp"
                 size={28}
                 color={size === "Medium" ? "#000" : "#bbb"}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setSize("Large")}>
+            <TouchableOpacity onPress={() => handleSizeChange("Large")}>
               <Icon
                 name="apps-outline"
                 size={28}
@@ -193,7 +143,7 @@ const DetailsScreen = () => {
         {/* Ice */}
         <View style={styles.row}>
           <Text style={styles.label}>Ice</Text>
-          <TouchableOpacity onPress={() => setIce(!ice)}>
+          <TouchableOpacity onPress={() => handleIceChange(!ice)}>
             <Icon
               name="ice-cream-outline"
               size={28}
@@ -205,11 +155,12 @@ const DetailsScreen = () => {
 
       {/* Total Amount */}
       <View style={styles.footer}>
-        <Text style={styles.totalAmount}>Total Amount: ${calculateTotal()}</Text>
+        <Text style={styles.totalAmount}>Total Amount: ${coffee?.calculatePrice()}</Text>
         <TouchableOpacity style={styles.addButton}
-        onPress={()=> {if (coffee) {
-          addToCart(coffee);
-        } router.push('/myCart')}}>
+        onPress={()=> {
+        addToCart(coffee);
+        router.push('/myCart')
+        }}>
           <Text style={styles.addButtonText}>Add to cart</Text>
         </TouchableOpacity>
       </View>
@@ -310,7 +261,4 @@ const styles = StyleSheet.create({
 });
 
 export default DetailsScreen;
-// function setCoffee(arg0: CoffeeType) {
-//   throw new Error("Function not implemented.");
-// }
 

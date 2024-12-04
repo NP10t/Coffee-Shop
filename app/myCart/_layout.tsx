@@ -13,6 +13,14 @@ const _layout = () => {
               headerTitleAlign: 'center',
             }} 
         />
+        <Stack.Screen 
+            name="orderSuccess" 
+            options={{ 
+              headerShown: true,
+              title: 'Order Success',
+              headerTitleAlign: 'center',
+            }}
+        />
     </Stack>
   )
 }

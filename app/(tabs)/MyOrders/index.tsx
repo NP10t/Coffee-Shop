@@ -1,37 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
 } from "react-native";
+import { useOrder } from "@/view-model/coffee-view-model";
 
 const OnGoing = () => {
   // Đây là dữ liệu lịch sử đơn hàng sau khi checkout
-  const [orderHistory, setOrderHistory] = useState([
-    {
-      id: 1,
-      items: [
-        { name: "Americano", quantity: 2, price: 3.0 },
-        { name: "Cafe Latte", quantity: 1, price: 3.0 },
-      ],
-      address: "3 Adderson Court Chino Hills, HO56824, United States",
-      totalPrice: 9.0,
-      date: "24 June | 12:30 PM",
-      status: "On-going", // Trạng thái: Đang xử lý
-    },
-    {
-      id: 2,
-      items: [
-        { name: "Flat White", quantity: 1, price: 3.0 },
-        { name: "Espresso", quantity: 3, price: 2.5 },
-      ],
-      address: "10 Apple St, New York, NY 10001, United States",
-      totalPrice: 10.5,
-      date: "20 June | 10:15 AM",
-      status: "On-going", // Trạng thái: Đã hoàn thành
-    },
-  ]);
+  const {ongoingOrders} = useOrder();
+
+  // useEffect(() => {
+  //   console.log("shahahahahhahaha", ongoingOrders);
+  // }, []);
 
   // Render từng đơn hàng
   const renderOrder = ({ item }) => (
@@ -63,7 +45,7 @@ const OnGoing = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={orderHistory}
+        data={ongoingOrders}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderOrder}
         contentContainerStyle={styles.listContainer}
@@ -134,3 +116,16 @@ const styles = StyleSheet.create({
 });
 
 export default OnGoing;
+
+// import { View, Text } from 'react-native'
+// import React from 'react'
+
+// const index = () => {
+//   return (
+//     <View>
+//       <Text>index</Text>
+//     </View>
+//   )
+// }
+
+// export default index

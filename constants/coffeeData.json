@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "name": "Americano",
+        "image": "americano",
+        "point": 10,
+        "price": 3.99
+    },
+    {
+        "id": 2,
+        "name": "Cappuccino",
+        "image": "cappuccino",
+        "point": 15,
+        "price": 4.99
+    },
+    {
+        "id": 3,
+        "name": "Mocha",
+        "image": "mocha",
+        "point": 20,
+        "price": 5.99
+    },
+    {
+        "id": 4,
+        "name": "Flat White",
+        "image": "flatWhite",
+        "point": 25,
+        "price": 6.99
+    }
+]

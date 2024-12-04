@@ -12,7 +12,8 @@ const _layout = () => {
       screenOptions={{
         tabBarActiveTintColor: Colors.primary,
         tabBarStyle: {
-          backgroundColor: 'white', // Màu nền của tab bar
+          display: 'none',
+          backgroundColor: 'red', // Màu nền của tab bar
           position: 'absolute', // Có thể di chuyển tab bar
           elevation: 0, // Loại bỏ shadow trên Android
           shadowOpacity: 0, // Loại bỏ shadow trên iOS
@@ -127,3 +128,18 @@ const styles = StyleSheet.create({
 });
 
 export default _layout;
+
+// import { View, Text } from 'react-native'
+// import React from 'react'
+// import { Stack } from 'expo-router'
+
+// const _layout = () => {
+//   return (
+//     <Stack>
+//       <Stack.Screen name="index" options={{ headerShown: false }} />
+//       <Stack.Screen name="history" options={{ headerShown: false }} />
+//     </Stack>
+//   )
+// }
+
+// export default _layout

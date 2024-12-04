@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-// import { ProfileSchema } from '@/constants/profileSchema';
-import { useOrder } from '@/context/coffeeContext';
+import { useOrder } from '@/view-model/coffee-view-model';
 
 
 const Profile = () => {
