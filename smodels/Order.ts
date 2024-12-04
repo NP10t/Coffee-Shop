@@ -24,6 +24,7 @@ export default class Order {
     this.totalPrice = totalPrice;
     this.items = items;
     this.address = address;
-    this.date = new Date().toISOString();
+    // this.date = new Date().toISOString();
+    this.date = "hello";
   }
 }

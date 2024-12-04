@@ -28,11 +28,11 @@ const Profile = () => {
     address,
     avatar,]);
 
-  useEffect(() => {
-    console.log(avatar);
+  // useEffect(() => {
+  //   console.log(avatar);
 
-    console.log(profile.avatar);
-  } , [email]);
+  //   console.log(profile.avatar);
+  // } , [email]);
 
 
   const handleDeleteAccount = () => {

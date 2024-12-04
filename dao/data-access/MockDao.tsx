@@ -1,9 +1,9 @@
 // import coffeeImages from '@/constants/images';
-import Coffee from '@/model/Coffee';
+import Coffee from '@/smodels/Coffee';
 import images from '@/constants/images';
 import coffeeData from '@/constants/coffeeData.json';
 import OnGoingData from '@/constants/onGoingData.json';
-import Order from '@/model/Order';
+import Order from '@/smodels/Order';
 
 export class MockDao {
     private static instance: MockDao;
